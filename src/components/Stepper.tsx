@@ -9,49 +9,80 @@ export default function Stepper() {
   );
 
   const steps = [
-    { id: 1, label: "Check-In", completed: checkedIn },
-    { id: 2, label: "Verify OTP", completed: eventStarted },
-    { id: 3, label: "Event Setup", completed: setupDone },
-    { id: 4, label: "Completion", completed: completed },
+    { id: 1, label: "Check-In", icon: "📍" },
+    { id: 2, label: "Verify OTP", icon: "🔐" },
+    { id: 3, label: "Event Setup", icon: "⚙️" },
+    { id: 4, label: "Completion", icon: "✨" },
   ];
 
+  const isStepCompleted = (index: number) => {
+    if (index === 0) return checkedIn;
+    if (index === 1) return eventStarted;
+    if (index === 2) return setupDone;
+    if (index === 3) return completed;
+    return false;
+  };
+
+  const isStepActive = (index: number) => {
+    if (index === 0) return true;
+    return isStepCompleted(index - 1);
+  };
+
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between">
-        {steps.map((step, index) => (
-          <div key={step.id} className="flex flex-col items-center flex-1">
-            {/* Step Circle */}
+    <div className="mb-10">
+      <div className="flex items-center justify-between relative">
+        {/* Background Connector Lines */}
+        {steps.map((_, index) => {
+          if (index === steps.length - 1) return null;
+          const isCompleted = isStepCompleted(index);
+          return (
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white mb-2 ${
-                step.completed
-                  ? "bg-green-600"
-                  : index === 0 || steps[index - 1]?.completed
-                    ? "bg-indigo-600"
-                    : "bg-gray-300"
+              key={`line-${index}`}
+              className={`absolute top-7 h-0.5 transition-colors duration-300 ${
+                isCompleted ? "bg-green-500" : "bg-gray-300"
               }`}
-            >
-              {step.completed ? "✓" : step.id}
-            </div>
+              style={{
+                left: `${(index + 0.5) * (100 / steps.length)}%`,
+                right: `${(steps.length - index - 1.5) * (100 / steps.length)}%`,
+              }}
+            />
+          );
+        })}
 
-            {/* Step Label */}
-            <p
-              className={`text-sm font-medium text-center ${
-                step.completed ? "text-green-600" : "text-gray-600"
-              }`}
-            >
-              {step.label}
-            </p>
-
-            {/* Connector Line */}
-            {index < steps.length - 1 && (
+        {/* Steps */}
+        {steps.map((step, index) => {
+          const completed = isStepCompleted(index);
+          const active = isStepActive(index);
+          return (
+            <div key={step.id} className="flex flex-col items-center relative z-10">
+              {/* Step Circle */}
               <div
-                className={`h-1 w-full mx-2 mt-2 ${
-                  step.completed ? "bg-green-600" : "bg-gray-300"
+                className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl transition-all duration-300 shadow-md ${
+                  completed
+                    ? "bg-gradient-to-br from-green-400 to-green-600 text-white scale-110"
+                    : active
+                      ? "bg-gradient-to-br from-indigo-500 to-indigo-700 text-white ring-4 ring-indigo-200"
+                      : "bg-gray-200 text-gray-400"
                 }`}
-              />
-            )}
-          </div>
-        ))}
+              >
+                {completed ? "✓" : step.icon}
+              </div>
+
+              {/* Step Label */}
+              <p
+                className={`text-xs font-bold text-center mt-3 transition-colors duration-300 ${
+                  completed
+                    ? "text-green-600"
+                    : active
+                      ? "text-indigo-600"
+                      : "text-gray-400"
+                }`}
+              >
+                {step.label}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

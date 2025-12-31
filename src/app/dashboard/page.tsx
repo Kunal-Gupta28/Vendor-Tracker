@@ -14,11 +14,11 @@ export default function Dashboard() {
 
   // Determine event status
   const getEventStatus = () => {
-    if (completed) return "Completed ✓";
-    if (setupDone) return "Setup Done";
-    if (eventStarted) return "In Progress";
-    if (checkedIn) return "Checked In";
-    return "Not Started";
+    if (completed) return { status: "Completed ✓", color: "text-green-600", bgColor: "bg-green-50" };
+    if (setupDone) return { status: "Setup Done", color: "text-blue-600", bgColor: "bg-blue-50" };
+    if (eventStarted) return { status: "In Progress", color: "text-purple-600", bgColor: "bg-purple-50" };
+    if (checkedIn) return { status: "Checked In", color: "text-indigo-600", bgColor: "bg-indigo-50" };
+    return { status: "Not Started", color: "text-gray-600", bgColor: "bg-gray-50" };
   };
 
   useEffect(() => {
@@ -27,6 +27,8 @@ export default function Dashboard() {
       router.push("/signin");
     }
   }, [router]);
+
+  const eventStatus = getEventStatus();
 
   const triggerOTP = async () => {
     try {
@@ -49,99 +51,106 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold mt-16">Vendor Dashboard</h1>
-          <p className="text-gray-600">Manage today's event workflow</p>
+        <header className="mb-10 pt-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Vendor Dashboard</h1>
+          <p className="text-gray-600 text-lg">Manage your event workflow seamlessly</p>
         </header>
 
         {/* Progress Stepper */}
-        <section className="bg-white rounded-lg shadow p-6 mb-8">
+        <section className="bg-white rounded-2xl shadow-lg p-8 mb-10">
+          <h2 className="text-lg font-bold text-gray-900 mb-8">Event Progress</h2>
           <Stepper />
         </section>
 
-        {/* Event stats */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-sm text-gray-500">Event Status</h3>
-            <p
-              className={`text-xl font-semibold ${
-                completed ? "text-green-600" : "text-indigo-600"
-              }`}
-            >
-              {getEventStatus()}
+        {/* Event Status Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {/* Status Card */}
+          <div className={`${eventStatus.bgColor} rounded-2xl shadow-lg p-8 border border-gray-200 transition hover:shadow-xl`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-gray-600">Event Status</h3>
+              <span className="text-2xl">📊</span>
+            </div>
+            <p className={`text-2xl font-bold ${eventStatus.color}`}>{eventStatus.status}</p>
+          </div>
+
+          {/* Check-In Card */}
+          <div className={`${checkedIn ? "bg-green-50" : "bg-gray-50"} rounded-2xl shadow-lg p-8 border border-gray-200 transition hover:shadow-xl`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-gray-600">Check-In</h3>
+              <span className="text-2xl">{checkedIn ? "✅" : "📍"}</span>
+            </div>
+            <p className={`text-2xl font-bold ${checkedIn ? "text-green-600" : "text-gray-600"}`}>
+              {checkedIn ? "Completed" : "Pending"}
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-sm text-gray-500">Check-In</h3>
-            <p className={`text-xl font-semibold ${checkedIn ? "text-green-600" : ""}`}>
-              {checkedIn ? "✓ Checked In" : "Pending"}
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-sm text-gray-500">Completion</h3>
-            <p className={`text-xl font-semibold ${completed ? "text-green-600" : ""}`}>
-              {completed ? "✓ Completed" : "—"}
+          {/* Completion Card */}
+          <div className={`${completed ? "bg-green-50" : "bg-gray-50"} rounded-2xl shadow-lg p-8 border border-gray-200 transition hover:shadow-xl`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-gray-600">Completion</h3>
+              <span className="text-2xl">{completed ? "🎉" : "⏳"}</span>
+            </div>
+            <p className={`text-2xl font-bold ${completed ? "text-green-600" : "text-gray-600"}`}>
+              {completed ? "Completed" : "Pending"}
             </p>
           </div>
         </section>
 
         {/* Actions */}
-        <section className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Event Actions</h2>
+        <section className="bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Event Actions</h2>
 
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Start Check-In */}
             <Link
               href="/check-in"
-              className={`inline-flex justify-center rounded-lg px-6 py-3 font-semibold transition ${
+              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 ${
                 checkedIn
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-indigo-600 text-white hover:bg-indigo-700"
+                  : "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:shadow-lg"
               }`}
             >
-              {checkedIn ? "✓ Check-In Done" : "Start Check-In"}
+              📍 {checkedIn ? "Check-In Done" : "Start Check-In"}
             </Link>
 
             {/* Trigger OTP */}
             <button
               onClick={triggerOTP}
               disabled={!checkedIn || eventStarted}
-              className={`inline-flex justify-center rounded-lg px-6 py-3 font-semibold transition ${
+              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 ${
                 !checkedIn || eventStarted
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:shadow-lg"
               }`}
             >
-              {eventStarted ? "✓ OTP Verified" : "Trigger OTP"}
+              🔐 {eventStarted ? "OTP Verified" : "Trigger OTP"}
             </button>
 
             {/* Go to Setup */}
             <Link
               href="/setup"
-              className={`inline-flex justify-center rounded-lg px-6 py-3 font-semibold transition ${
+              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 ${
                 !eventStarted || setupDone
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-purple-600 text-white hover:bg-purple-700"
+                  : "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-lg"
               }`}
             >
-              {setupDone ? "✓ Setup Done" : "Go to Setup"}
+              ⚙️ {setupDone ? "Setup Done" : "Go to Setup"}
             </Link>
 
             {/* Complete Event */}
             <Link
               href="/complete"
-              className={`inline-flex justify-center rounded-lg px-6 py-3 font-semibold transition ${
+              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 ${
                 !setupDone || completed
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-gradient-to-r from-green-600 to-green-700 text-white hover:shadow-lg"
               }`}
             >
-              {completed ? "✓ Completed" : "Complete Event"}
+              ✨ {completed ? "Completed" : "Complete Event"}
             </Link>
           </div>
         </section>
