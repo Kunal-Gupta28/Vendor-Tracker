@@ -35,6 +35,7 @@ export default function Stepper() {
         {steps.map((_, index) => {
           if (index === steps.length - 1) return null;
           const isCompleted = isStepCompleted(index);
+          const stepWidth = 95 / (steps.length - 1);
           return (
             <div
               key={`line-${index}`}
@@ -42,8 +43,8 @@ export default function Stepper() {
                 isCompleted ? "bg-green-500" : "bg-gray-300"
               }`}
               style={{
-                left: `${(index + 0.5) * (100 / steps.length)}%`,
-                right: `${(steps.length - index - 1.5) * (100 / steps.length)}%`,
+                left: `${index * stepWidth}%`,
+                width: `${stepWidth}%`,
               }}
             />
           );

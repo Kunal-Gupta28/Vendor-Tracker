@@ -27,6 +27,12 @@ export default function SignIn() {
     }
 
     sessionStorage.setItem("isAuth", "true");
+    // notify same-window listeners (e.g. Navbar) about auth change
+    try {
+      window.dispatchEvent(new Event("authChange"));
+    } catch {
+      /* noop for environments without window */
+    }
     router.push("/dashboard");
   };
 
@@ -51,7 +57,7 @@ export default function SignIn() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Username</label>
             <input
               type="text"
-              placeholder="Enter your username"
+              placeholder='Demo username "admin"'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-gray-50"
@@ -63,7 +69,7 @@ export default function SignIn() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder='Demo password "1234"'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-gray-50"

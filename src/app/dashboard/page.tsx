@@ -52,7 +52,7 @@ export default function Dashboard() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto mt-16">
         {/* Header */}
         <header className="mb-10 pt-4">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Vendor Dashboard</h1>
@@ -105,16 +105,18 @@ export default function Dashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Start Check-In */}
-            <Link
-              href="/check-in"
-              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 ${
-                checkedIn
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:shadow-lg"
-              }`}
-            >
-              📍 {checkedIn ? "Check-In Done" : "Start Check-In"}
-            </Link>
+            {checkedIn ? (
+              <div className="rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 bg-gray-200 text-gray-500 cursor-not-allowed">
+                📍 Check-In Done
+              </div>
+            ) : (
+              <Link
+                href="/check-in"
+                className="rounded-xl px-6 py-4 font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:shadow-lg"
+              >
+                📍 Start Check-In
+              </Link>
+            )}
 
             {/* Trigger OTP */}
             <button
@@ -130,28 +132,32 @@ export default function Dashboard() {
             </button>
 
             {/* Go to Setup */}
-            <Link
-              href="/setup"
-              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 ${
-                !eventStarted || setupDone
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-lg"
-              }`}
-            >
-              ⚙️ {setupDone ? "Setup Done" : "Go to Setup"}
-            </Link>
+            {!eventStarted || setupDone ? (
+              <div className="rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 bg-gray-200 text-gray-500 cursor-not-allowed">
+                ⚙️ {setupDone ? "Setup Done" : "Go to Setup"}
+              </div>
+            ) : (
+              <Link
+                href="/setup"
+                className="rounded-xl px-6 py-4 font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
+              >
+                ⚙️ Go to Setup
+              </Link>
+            )}
 
             {/* Complete Event */}
-            <Link
-              href="/complete"
-              className={`rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 ${
-                !setupDone || completed
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-green-600 to-green-700 text-white hover:shadow-lg"
-              }`}
-            >
-              ✨ {completed ? "Completed" : "Complete Event"}
-            </Link>
+            {!setupDone || completed ? (
+              <div className="rounded-xl px-6 py-4 font-semibold transition shadow-md flex items-center justify-center gap-2 bg-gray-200 text-gray-500 cursor-not-allowed">
+                ✨ {completed ? "Completed" : "Complete Event"}
+              </div>
+            ) : (
+              <Link
+                href="/complete"
+                className="rounded-xl px-6 py-4 font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white"
+              >
+                ✨ Complete Event
+              </Link>
+            )}
           </div>
         </section>
       </div>

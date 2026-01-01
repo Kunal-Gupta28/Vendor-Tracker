@@ -2,22 +2,48 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check auth status on load
+  const pathname = usePathname();
+
+  // Check auth status on load and when route changes or auth changes
   useEffect(() => {
-    const auth = sessionStorage.getItem("isAuth") === "true";
-    setIsLoggedIn(auth);
-  }, []);
+    const checkAuth = () => {
+      const auth = sessionStorage.getItem("isAuth") === "true";
+      setIsLoggedIn(auth);
+    };
+
+    // initial check
+    checkAuth();
+
+    // update on cross-tab storage changes
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "isAuth") checkAuth();
+    };
+
+    // custom event for same-window updates
+    const onAuthChange = () => checkAuth();
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("authChange", onAuthChange);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("authChange", onAuthChange);
+    };
+  }, [pathname]);
 
   // Logout handler
   const handleLogout = () => {
     sessionStorage.removeItem("isAuth");
     setIsLoggedIn(false);
+    try {
+      window.dispatchEvent(new Event("authChange"));
+    } catch {}
     router.push("/signin");
   };
 
